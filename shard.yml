@@ -1,0 +1,13 @@
+name: ldsync
+version: 0.1.0
+
+authors:
+  - Dru Jensen <djensen@happymoney.com>
+
+targets:
+  ldsync:
+    main: src/ldsync.cr
+
+crystal: 1.3.2
+
+license: MIT

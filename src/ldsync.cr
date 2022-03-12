@@ -53,11 +53,16 @@ option_parser = OptionParser.parse do |parser|
 end
 
 # read config/ldsync.yml
-yaml = File.open(config_filename) do |file|
-  YAML.parse(file)
+begin
+  yaml = File.open(config_filename) do |file|
+    YAML.parse(file)
+  end
+rescue
+  puts "LDSync - Could not open #{config_filename}. exiting."
+  exit 1
 end
 
-unless token = ENV["LDSYNC_TOKEN"]? || yaml["access_token"]?
+unless token = ENV["LDSYNC_TOKEN"]? || yaml["token"]?
   puts "LDSync - Access token required. exiting."
   exit 1
 end

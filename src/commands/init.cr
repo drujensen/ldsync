@@ -2,7 +2,7 @@ require "file_utils"
 
 class Init
   def self.exec(filename : String)
-    puts "LDSync - creating a sample config file in #{filename}"
+    puts "LDSync - creating an example config file in #{filename}"
     begin
       unless File.exists? filename
         FileUtils.mkdir_p "config" if filename.includes? "config/"
@@ -11,7 +11,8 @@ class Init
         config.flags["example-flag"] = false
         config.dump
       else
-        puts "LDSync - config file already exists"
+        puts "LDSync - config file already exists. exiting"
+        exit 1
       end
     rescue ex
       puts "LDSync - Could not create #{filename}. exiting"

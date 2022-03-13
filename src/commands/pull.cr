@@ -13,14 +13,8 @@ class Pull
 
     # get list of existing keys
     flags = service.get_flags
-
-    flags["items"].as_a.each do |flag|
-      key = flag["key"].as_s
-      environments = flag["environments"].as_h
-      env_values = environments[config.environment].as_h
-      status = env_values["on"].as_bool
-
-      config.flags[key] = status
+    flags.each do |key, value|
+      config.flags[key] = value
     end
 
     # dump new config file

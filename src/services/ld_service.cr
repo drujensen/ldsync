@@ -82,7 +82,7 @@ class LDService
     sleep_if_rate_limit(response)
   end
 
-  def get_flags
+  def get_flags : Hash(String, Bool)
     response = HTTP::Client.get("#{base_url}/flags/#{@config.project}", headers: headers)
 
     unless response.status_code == 200
@@ -91,7 +91,19 @@ class LDService
     end
 
     sleep_if_rate_limit(response)
-    return JSON.parse(response.body)
+
+    flags = JSON.parse(response.body)
+
+    results = Hash(String, Bool).new
+    flags["items"].as_a.each do |flag|
+      key = flag["key"].as_s
+      environments = flag["environments"].as_h
+      env_values = environments[@config.environment].as_h
+      value = env_values["on"].as_bool
+      results[key] = value
+    end
+
+    return results
   end
 
   def create_flag(key : String)

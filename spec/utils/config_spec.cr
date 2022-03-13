@@ -10,6 +10,7 @@ describe Config do
 
   it "dump values to a yaml file" do
     config = Config.new "spec/utils/config/sample.yml"
+    FileUtils.rm "spec/utils/config/sample.yml"
     config.dump
     File.exists?("spec/utils/config/sample.yml").should eq true
   end

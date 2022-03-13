@@ -30,7 +30,7 @@ class Pull
       exit 1
     end
 
-    # connect to ld
+    # get flags
     headers = HTTP::Headers.new
     headers["Authorization"] = token.to_s
     headers["Content-Type"] = "application/json"
@@ -41,26 +41,22 @@ class Pull
       exit
     end
 
-    config = Hash(String, String | Hash(String, Hash(String, String | Bool))).new
+    config = Hash(String, String | Hash(String, Bool)).new
     config["token"] = token.to_s if yaml["token"]?
     config["project"] = project.to_s
     config["environment"] = environment.to_s
 
-    tmp_flags = Hash(String, Hash(String, String | Bool)).new
+    tmp_flags = Hash(String, Bool).new
 
     # get list of existing keys
     flags = JSON.parse(response.body)
     flags["items"].as_a.each do |flag|
       key = flag["key"].as_s
-      name = flag["name"].as_s
       environments = flag["environments"].as_h
       env_values = environments[environment].as_h
       status = env_values["on"].as_bool
 
-      tmp = Hash(String, String | Bool).new
-      tmp["name"] = name
-      tmp["status"] = status
-      tmp_flags[key] = tmp
+      tmp_flags[key] = status
     end
 
     config["flags"] = tmp_flags

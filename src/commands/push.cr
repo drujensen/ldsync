@@ -31,6 +31,7 @@ class Push
     end
 
     # check if project exists
+    puts "LDSync - Check if project exists"
     headers = HTTP::Headers.new
     headers["Authorization"] = token.to_s
     headers["Content-Type"] = "application/json"
@@ -67,6 +68,7 @@ class Push
     end
 
     # check if environment exists
+    puts "LDSync - Check if environment exists"
     headers = HTTP::Headers.new
     headers["Authorization"] = token.to_s
     headers["Content-Type"] = "application/json"
@@ -103,6 +105,7 @@ class Push
     end
 
     # get existing flags
+    puts "LDSync - Get existing flags"
     headers = HTTP::Headers.new
     headers["Authorization"] = token.to_s
     headers["Content-Type"] = "application/json"
@@ -136,7 +139,7 @@ class Push
         headers = HTTP::Headers.new
         headers["Authorization"] = token.to_s
         headers["Content-Type"] = "application/json"
-        body = "{\"key\": \"#{key.to_s}\", \"name\": \"#{value["name"].to_s}\"}"
+        body = "{\"key\": \"#{key.to_s}\", \"name\": \"#{key.to_s.sub(/[-+_\.]/, " ").titleize}\"}"
         response = HTTP::Client.post("https://app.launchdarkly.com/api/v2/flags/#{project}", headers: headers, body: body)
 
         unless response.status_code == 201
@@ -157,8 +160,8 @@ class Push
 
     # update flag status
     yaml["flags"].as_h.each do |key, value|
-      instruction = value["status"].as_bool ? "turnFlagOn" : "turnFlagOff"
-      puts "LDSync - #{instruction} for #{key}"
+      puts "LDSync - set #{key} to #{value}"
+      instruction = value.as_bool ? "turnFlagOn" : "turnFlagOff"
 
       headers = HTTP::Headers.new
       headers["Authorization"] = token.to_s

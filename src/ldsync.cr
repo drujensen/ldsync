@@ -3,7 +3,6 @@ require "./commands/*"
 
 module LDSync
   def self.exec
-    project = "project"
     filename = "config/ldsync.yml"
     command = ""
 
@@ -55,15 +54,15 @@ module LDSync
     end
 
     if command == "init"
-      Init.exec(project, filename)
+      Init.exec(filename)
     end
 
     if command == "push"
-      Push.exec(project, filename)
+      Push.exec(filename)
     end
 
     if command == "pull"
-      Pull.exec(project, filename)
+      Pull.exec(filename)
     end
   end
 end

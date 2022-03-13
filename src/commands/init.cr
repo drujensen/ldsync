@@ -1,13 +1,13 @@
 require "file_utils"
 
 class Init
-  def self.exec(project : String, filename : String)
+  def self.exec(filename : String)
     sample = <<-EOL
     ---
-    project: #{project}
-    environment: local
+    project: example-project
+    environment: example-environment
     flags:
-      example:
+      example-flag:
         name: "Example Flag"
         status: false
 

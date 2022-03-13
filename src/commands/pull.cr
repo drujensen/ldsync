@@ -3,7 +3,7 @@ require "json"
 require "yaml"
 
 class Pull
-  def self.exec(project : String, filename : String)
+  def self.exec(filename : String)
     puts "LDSync - pulling from Launch Darkly"
     # read config/ldsync.yml
     begin

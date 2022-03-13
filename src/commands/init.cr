@@ -4,12 +4,10 @@ class Init
   def self.exec(filename : String)
     sample = <<-EOL
     ---
-    project: example-project
+    project: #{Dir.current.split("/").last}
     environment: example-environment
     flags:
-      example-flag:
-        name: "Example Flag"
-        status: false
+      example-flag: off
 
     EOL
 

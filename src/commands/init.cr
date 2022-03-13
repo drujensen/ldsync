@@ -2,25 +2,20 @@ require "file_utils"
 
 class Init
   def self.exec(filename : String)
-    sample = <<-EOL
-    ---
-    project: #{Dir.current.split("/").last}
-    environment: example-environment
-    flags:
-      example-flag: off
-
-    EOL
-
     puts "LDSync - creating a sample config file in #{filename}"
     begin
       unless File.exists? filename
         FileUtils.mkdir_p "config" if filename.includes? "config/"
-        File.write(filename, sample)
+        project = Dir.current.split("/").last
+        config = Config.new(filename, project, "example-environment")
+        config.flags["example-flag"] = false
+        config.dump
       else
         puts "LDSync - config file already exists"
       end
-    rescue
+    rescue ex
       puts "LDSync - Could not create #{filename}. exiting"
+      puts ex.message
       exit 1
     end
     puts "LDSync - init completed successfully"

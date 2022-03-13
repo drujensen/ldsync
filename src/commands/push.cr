@@ -5,51 +5,30 @@ require "yaml"
 class Push
   def self.exec(filename : String)
     puts "LDSync - pushing to Launch Darkly"
-    # read config/ldsync.yml
-    begin
-      yaml = File.open(filename) do |file|
-        YAML.parse(file)
-      end
-    rescue
-      puts "LDSync - Could not open #{filename}. exiting."
-      exit 1
-    end
 
-    unless token = ENV["LDSYNC_TOKEN"]? || yaml["token"]?
-      puts "LDSync - Access token required. exiting."
-      exit 1
-    end
-
-    unless project = ENV["LDSYNC_PROJECT"]? || yaml["project"]?
-      puts "LDSync - Project required. exiting."
-      exit 1
-    end
-
-    unless environment = ENV["LDSYNC_ENVIRONMENT"]? || yaml["environment"]?
-      puts "LDSync - Environment required. exiting."
-      exit 1
-    end
+    # load config file
+    config = Config.new(filename)
 
     # check if project exists
     puts "LDSync - Check if project exists"
     headers = HTTP::Headers.new
-    headers["Authorization"] = token.to_s
+    headers["Authorization"] = config.token
     headers["Content-Type"] = "application/json"
-    response = HTTP::Client.get("https://app.launchdarkly.com/api/v2/projects/#{project}", headers: headers)
+    response = HTTP::Client.get("https://app.launchdarkly.com/api/v2/projects/#{config.project}", headers: headers)
 
     unless response.status_code == 200
       if response.status_code == 404
-        puts "LDSync - project not found. creating project #{project}"
+        puts "LDSync - project not found. creating project #{config.project}"
 
         # create project
         headers = HTTP::Headers.new
-        headers["Authorization"] = token.to_s
+        headers["Authorization"] = config.token
         headers["Content-Type"] = "application/json"
-        body = "{\"key\": \"#{project.to_s}\", \"name\": \"#{project.to_s.sub(/[-+_\.]/, " ").titleize}\"}"
+        body = "{\"key\": \"#{config.project}\", \"name\": \"#{Util.humanize(config.project)}\"}"
         response = HTTP::Client.post("https://app.launchdarkly.com/api/v2/projects", headers: headers, body: body)
 
         unless response.status_code == 201
-          puts "LDSync - Failed to create project #{project}"
+          puts "LDSync - Failed to create project #{config.project}"
           puts response.body.to_s
           exit 1
         end
@@ -70,23 +49,23 @@ class Push
     # check if environment exists
     puts "LDSync - Check if environment exists"
     headers = HTTP::Headers.new
-    headers["Authorization"] = token.to_s
+    headers["Authorization"] = config.token
     headers["Content-Type"] = "application/json"
-    response = HTTP::Client.get("https://app.launchdarkly.com/api/v2/projects/#{project}/environments/#{environment}", headers: headers)
+    response = HTTP::Client.get("https://app.launchdarkly.com/api/v2/projects/#{config.project}/environments/#{config.environment}", headers: headers)
 
     unless response.status_code == 200
       if response.status_code == 404
-        puts "LDSync - environment not found. creating environment #{environment}"
+        puts "LDSync - environment not found. creating environment #{config.environment}"
 
         # create environment
         headers = HTTP::Headers.new
-        headers["Authorization"] = token.to_s
+        headers["Authorization"] = config.token
         headers["Content-Type"] = "application/json"
-        body = "{\"key\": \"#{environment.to_s}\", \"name\": \"#{environment.to_s.sub(/[-+_\.]/, " ").titleize}\", \"color\": \"DADBEE\"}"
-        response = HTTP::Client.post("https://app.launchdarkly.com/api/v2/projects/#{project}/environments", headers: headers, body: body)
+        body = "{\"key\": \"#{config.environment}\", \"name\": \"#{Util.humanize(config.environment)}\", \"color\": \"DADBEE\"}"
+        response = HTTP::Client.post("https://app.launchdarkly.com/api/v2/projects/#{config.project}/environments", headers: headers, body: body)
 
         unless response.status_code == 201
-          puts "LDSync - Failed to create environment #{environment}"
+          puts "LDSync - Failed to create environment #{config.environment}"
           puts response.body.to_s
           exit 1
         end
@@ -107,9 +86,9 @@ class Push
     # get existing flags
     puts "LDSync - Get existing flags"
     headers = HTTP::Headers.new
-    headers["Authorization"] = token.to_s
+    headers["Authorization"] = config.token
     headers["Content-Type"] = "application/json"
-    response = HTTP::Client.get("https://app.launchdarkly.com/api/v2/flags/#{project}", headers: headers)
+    response = HTTP::Client.get("https://app.launchdarkly.com/api/v2/flags/#{config.project}", headers: headers)
 
     unless response.status_code == 200
       puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token."
@@ -132,15 +111,15 @@ class Push
     end
 
     # create flags that do not exist
-    yaml["flags"].as_h.each do |key, value|
+    config.flags.each do |key, value|
       unless keys.includes? key
         puts "LDSync - Creating flag: #{key}"
 
         headers = HTTP::Headers.new
-        headers["Authorization"] = token.to_s
+        headers["Authorization"] = config.token
         headers["Content-Type"] = "application/json"
-        body = "{\"key\": \"#{key.to_s}\", \"name\": \"#{key.to_s.sub(/[-+_\.]/, " ").titleize}\"}"
-        response = HTTP::Client.post("https://app.launchdarkly.com/api/v2/flags/#{project}", headers: headers, body: body)
+        body = "{\"key\": \"#{key.to_s}\", \"name\": \"#{Util.humanize(key.to_s)}\"}"
+        response = HTTP::Client.post("https://app.launchdarkly.com/api/v2/flags/#{config.project}", headers: headers, body: body)
 
         unless response.status_code == 201
           puts "LDSync - Failed to create flag #{key}"
@@ -159,15 +138,15 @@ class Push
     end
 
     # update flag status
-    yaml["flags"].as_h.each do |key, value|
+    config.flags.each do |key, value|
       puts "LDSync - set #{key} to #{value}"
-      instruction = value.as_bool ? "turnFlagOn" : "turnFlagOff"
+      instruction = value ? "turnFlagOn" : "turnFlagOff"
 
       headers = HTTP::Headers.new
-      headers["Authorization"] = token.to_s
+      headers["Authorization"] = config.token
       headers["Content-Type"] = "application/json; domain-model=launchdarkly.semanticpatch"
-      body = "{\"environmentKey\": \"#{environment.to_s}\", \"instructions\": [ { \"kind\": \"#{instruction}\" } ] }"
-      response = HTTP::Client.patch("https://app.launchdarkly.com/api/v2/flags/#{project}/#{key}", headers: headers, body: body)
+      body = "{\"environmentKey\": \"#{config.environment}\", \"instructions\": [ { \"kind\": \"#{instruction}\" } ] }"
+      response = HTTP::Client.patch("https://app.launchdarkly.com/api/v2/flags/#{config.project}/#{key}", headers: headers, body: body)
 
       unless response.status_code == 200
         puts "LDSync - Failed to #{instruction} for #{key}"

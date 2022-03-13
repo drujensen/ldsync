@@ -1,4 +1,6 @@
 require "option_parser"
+require "./utils/*"
+require "./services/*"
 require "./commands/*"
 
 module LDSync
@@ -46,11 +48,6 @@ module LDSync
         parser.banner = "Usage: ldsync pull"
         command = "pull"
       end
-    end
-
-    if command == ""
-      puts "LDSync - command not recognized. Try: ldsync --help. exiting"
-      exit 1
     end
 
     if command == "init"

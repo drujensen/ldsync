@@ -1,0 +1,5 @@
+require "spec"
+require "../src/ldsync"
+require "../src/utils/*"
+require "../src/commands/*"
+require "../src/services/*"

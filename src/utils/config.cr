@@ -30,7 +30,7 @@ class Config
       exit 1
     end
 
-    unless @token = ENV["LDSYNC_TOKEN"]? || yaml["token"]?.to_s
+    unless @token = ENV["LDSYNC_TOKEN"]?.to_s
       puts "LDSync - Access token required. exiting."
       exit 1
     end

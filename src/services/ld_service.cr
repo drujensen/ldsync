@@ -23,12 +23,25 @@ class LDService
   end
 
   def sleep_if_rate_limit(response : HTTP::Client::Response)
-    if limit = response.headers["X-Ratelimit-Reset"]?
-      limit_sec = ((Time.unix_ms(limit.to_i64) - Time.utc)).to_i
+    global = response.headers["X-Ratelimit-Global-Remaining"]?
+    route = response.headers["X-Ratelimit-Route-Remaining"]?
+    limit = response.headers["X-Ratelimit-Reset"]?
+    retry_after = response.headers["Retry-After"]?
+
+    return if global && global.to_i > 0
+    return if route && route.to_i > 0
+
+    if limit
+      limit_sec = ((Time.unix_ms(limit.to_i64) - Time.utc)).to_i + 10
       if limit_sec > 0
         puts "LDSync - rate limit.  waiting #{limit_sec} seconds"
         sleep limit_sec
       end
+    end
+
+    if retry_after && retry_after.to_i > 0
+      puts "LDSync - ip rate limit.  waiting #{retry_after} seconds"
+      sleep retry_after.to_i
     end
   end
 

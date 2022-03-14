@@ -16,37 +16,62 @@ brew install ldsync
 
 You will need to a [Launch Darkly API access token](https://docs.launchdarkly.com/home/account-security/api-access-tokens) to use this utility.
 
-Add this to your shell profile or set this environment variable before using:
+You should add this token to your shell profile or set this environment variable before using:
 ```sh
 export LDSYNC_TOKEN="{API access token}"
 ```
 
-Next, create a config file in `config/ldsync.yml`.
+## Usage
 
-Here is an example:
+To start off, we need to create a config file.  The default location of the config file is: `config/ldsync.yml`
+
+### Initialize config file
+
+To create an example config file:
+```sh
+ldsync init
+```
+
+If you need to specify a different location, you will need to use the `-c` flag:
+```sh
+ldsync init -c example.yml
+```
+
+Here is what the config file looks like:
 ```yaml
 project: {project-key}
 environment: {environment-key}
 flags:
-  EXAMPLE_ON_FLAG:
-    name: "Example On Flag"
-    status: true
-  EXAMPLE_OFF_FLAG:
-    name: "Example Off Flag"
-    status: false
+  example-flag: true
 ```
 
+### Push to Launch Darkly
+
+After setting up the config file, you can push the changes to Launch Darkly.  This will create the project, environment, flags, and value.  If the resource already exists, it will skip it. Your access token will need permission to create the resources that do not already exist.
+
+To push the changes:
+```sh
+ldsync push
+```
+
+### Pull from Launch Darkly
+
+If you make changes in Launch Darkly UI and you want to pull those changes down into the config file, you can do that will the pull command.  This will replace all the flags in the config file with the ones setup in Launch Darkly.  It will pull the settings based on the environment you have chosen.
+
+To pull the changes:
+```sh
+ldsync pull
+```
+
+## Enviroment Variables
+
+There are cases where you want to override the Token, Project or Environment.  You can do this using environment variables.
 The following environment variables are supported:
-  LDSYNC_TOKEN - Launch Darkly Access Token
-  LDSYNC_PROJECT - Launch Darkly Project Key
-  LDSYNC_ENVIRONMENT - Launch Darkly Environment Key
-
-## Usage
-
-Usage: ldsync
-    -v, --version                    Show version
-    -h, --help                       Show help
-    -c FILE, --config=FILE           Path to the config file
+```sh
+LDSYNC_TOKEN={Launch Darkly Access Token}
+LDSYNC_PROJECT={Launch Darkly Project Key}
+LDSYNC_ENVIRONMENT={Launch Darkly Environment Key}
+```
 
 ## Development
 

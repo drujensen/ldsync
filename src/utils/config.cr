@@ -50,7 +50,7 @@ class Config
     end
   end
 
-  def dump
+  def save
     # write new yaml file
     begin
       FileUtils.mkdir_p "config" if @filename.includes? "config/"

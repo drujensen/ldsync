@@ -9,7 +9,7 @@ class Init
         project = Dir.current.split("/").last
         config = Config.new(filename, project, "example-environment")
         config.flags["example-flag"] = false
-        config.dump
+        config.save
       else
         puts "LDSync - config file already exists. exiting"
         exit 1

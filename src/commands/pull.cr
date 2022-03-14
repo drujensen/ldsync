@@ -17,8 +17,8 @@ class Pull
       config.flags[key] = value
     end
 
-    # dump new config file
-    config.dump
+    # save the new config file
+    config.save
 
     puts "LDSync - pull completed successfully"
   end

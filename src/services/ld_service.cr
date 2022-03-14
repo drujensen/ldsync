@@ -32,7 +32,7 @@ class LDService
     return if route && route.to_i > 0
 
     if limit
-      limit_sec = ((Time.unix_ms(limit.to_i64) - Time.utc)).to_i + 10
+      limit_sec = ((Time.unix_ms(limit.to_i64) - Time.utc)).to_i + 5
       if limit_sec > 0
         puts "LDSync - rate limit.  waiting #{limit_sec} seconds"
         sleep limit_sec

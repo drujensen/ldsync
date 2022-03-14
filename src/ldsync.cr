@@ -11,7 +11,7 @@ module LDSync
     option_parser = OptionParser.parse do |parser|
       parser.banner = "Usage: ldsync [command]"
       parser.on "-v", "--version", "Show version" do
-        puts "version 0.1.4"
+        puts "version 0.1.5"
         exit
       end
       parser.on "-h", "--help", "Show help" do

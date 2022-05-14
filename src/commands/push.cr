@@ -24,16 +24,16 @@ class Push
     flags = service.get_flags
 
     # create flags that do not exist
-    config.flags.each do |key, value|
-      unless flags.has_key? key
-        service.create_flag(key.to_s)
+    config.flags.each do |flag|
+      unless flags.has_key? flag.key
+        service.create_flag(flag.key, flag.name)
       end
     end
 
     # update flag status
-    config.flags.each do |key, value|
-      unless flags[key] == value
-        service.set_flag(key, value)
+    config.flags.each do |flag|
+      unless flags[flag.key][1] == flag.enabled
+        service.set_flag(flag.key, flag.enabled)
       end
     end
     puts "LDSync - push completed successfully"

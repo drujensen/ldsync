@@ -9,12 +9,12 @@ class Pull
     service = LDService.new(config)
 
     # clear existing flags
-    config.flags = Hash(String, Bool).new
+    config.clear_flags
 
     # get list of existing keys
     flags = service.get_flags
-    flags.each do |key, value|
-      config.flags[key] = value
+    flags.each do |key, values|
+      config.add_flag(key, values[0], values[1])
     end
 
     # save the new config file

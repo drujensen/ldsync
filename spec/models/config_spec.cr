@@ -5,7 +5,9 @@ describe Config do
     config = Config.new "config/ldsync.yml"
     config.project.should eq "example-project"
     config.environment.should eq "example-environment"
-    config.flags["example-flag"].should eq false
+    config.flags[0].key.should eq "example-flag"
+    config.flags[0].name.should eq "Example Flag"
+    config.flags[0].enabled.should eq false
   end
 
   it "should support loading an empty config file for the init function" do

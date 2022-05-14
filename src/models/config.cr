@@ -9,16 +9,16 @@ class Config
   property token : String
   property project : String
   property environment : String
-  property flags : Hash(String, Bool)
+  property flags : Array(Flag)
 
   def initialize(@filename, @project, @environment)
     @token = ""
-    @flags = Hash(String, Bool).new
+    @flags = Array(Flag).new
   end
 
   def initialize(filename : String)
     @filename = filename
-    @flags = Hash(String, Bool).new
+    @flags = Array(Flag).new
 
     # read config file
     begin
@@ -46,8 +46,18 @@ class Config
     end
 
     if yaml_flags = yaml["flags"]?
-      yaml_flags.as_h.each { |name, value| @flags[name.to_s] = value.as_bool }
+      yaml_flags.as_a.each do |flag|
+        add_flag(flag["key"].to_s, flag["name"].to_s, flag["enabled"].as_bool)
+      end
     end
+  end
+
+  def clear_flags
+    @flags = Array(Flag).new
+  end
+
+  def add_flag(key : String, name : String, enabled : Bool)
+    @flags << Flag.new(key, name, enabled)
   end
 
   def save

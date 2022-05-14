@@ -42,7 +42,9 @@ Here is what the config file looks like:
 project: {project-key}
 environment: {environment-key}
 flags:
-  example-flag: true
+- key: example-flag
+  name: Example Flag
+  enabled: true
 ```
 
 ### Push to Launch Darkly

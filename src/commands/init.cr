@@ -8,7 +8,7 @@ class Init
         FileUtils.mkdir_p "config" if filename.includes? "config/"
         project = Dir.current.split("/").last
         config = Config.new(filename, project, "example-environment")
-        config.flags["example-flag"] = false
+        config.add_flag("example-flag", "Example Flag", false)
         config.save
       else
         puts "LDSync - config file already exists. exiting"

@@ -2,6 +2,7 @@ require "option_parser"
 require "./utils/*"
 require "./services/*"
 require "./commands/*"
+require "./models/*"
 
 module LDSync
   def self.exec

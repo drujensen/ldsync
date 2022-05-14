@@ -2,4 +2,6 @@
 project: example-project
 environment: example-environment
 flags:
-  example-flag: false
+- key: example-flag
+  name: Example Flag
+  enabled: false

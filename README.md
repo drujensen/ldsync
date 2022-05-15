@@ -18,7 +18,7 @@ You will need to a [Launch Darkly API access token](https://docs.launchdarkly.co
 
 You should add this token to your shell profile or set this environment variable before using:
 ```sh
-export LDSYNC_TOKEN="{API access token}"
+export LD_TOKEN="{API access token}"
 ```
 
 ## Usage
@@ -70,9 +70,9 @@ ldsync pull
 There are cases where you want to override the Token, Project or Environment.  You can do this using environment variables.
 The following environment variables are supported:
 ```sh
-LDSYNC_TOKEN={Launch Darkly Access Token}
-LDSYNC_PROJECT={Launch Darkly Project Key}
-LDSYNC_ENVIRONMENT={Launch Darkly Environment Key}
+LD_TOKEN={Launch Darkly Access Token}
+LD_PROJECT={Launch Darkly Project Key}
+LD_ENVIRONMENT={Launch Darkly Environment Key}
 ```
 
 ## Development

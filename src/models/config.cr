@@ -30,17 +30,17 @@ class Config
       exit 1
     end
 
-    unless @token = ENV["LDSYNC_TOKEN"]?.to_s
+    unless @token = ENV["LD_TOKEN"]?.to_s
       puts "LDSync - Access token required. exiting."
       exit 1
     end
 
-    unless @project = ENV["LDSYNC_PROJECT"]? || yaml["project"]?.to_s
+    unless @project = ENV["LD_PROJECT"]? || yaml["project"]?.to_s
       puts "LDSync - Project required. exiting."
       exit 1
     end
 
-    unless @environment = ENV["LDSYNC_ENVIRONMENT"]? || yaml["environment"]?.to_s
+    unless @environment = ENV["LD_ENVIRONMENT"]? || yaml["environment"]?.to_s
       puts "LDSync - Environment required. exiting."
       exit 1
     end

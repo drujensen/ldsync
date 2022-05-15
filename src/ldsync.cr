@@ -24,9 +24,9 @@ module LDSync
     The default config file is config/ldsync.yml.
 
     The following environment variables will overwrite the config file settings:
-      LDSYNC_TOKEN - Launch Darkly Access Token (required)
-      LDSYNC_PROJECT - Launch Darkly Project Key
-      LDSYNC_ENVIRONMENT - Launch Darkly Environment Key
+      LD_TOKEN - Launch Darkly Access Token (required)
+      LD_PROJECT - Launch Darkly Project Key
+      LD_ENVIRONMENT - Launch Darkly Environment Key
 
     ------------------------------------
     EOL

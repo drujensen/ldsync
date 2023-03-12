@@ -97,7 +97,7 @@ module LDSync
     end
 
     if command == "pull"
-      Pull.exec(filename)
+      Pull.exec(filename, project, environment)
       exit
     end
 

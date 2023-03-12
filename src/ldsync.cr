@@ -25,11 +25,14 @@ module LDSync
     the flags if they don't exist and then turn on/off the flags based on the status.
     The default config file is config/ldconfig.yml.
 
-    The following environment variables will overwrite the config file settings:
+    All commands require a token. You will need to create one in Launch Darkly:
       LD_TOKEN - Launch Darkly Access Token (required)
+
+    The following environment variables will overwrite the config file settings:
       LD_PROJECT - Launch Darkly Project Key
       LD_ENVIRONMENT - Launch Darkly Environment Key
 
+    The command line parameters -p and -e will override the config file and environment variables.
     ------------------------------------
     EOL
 

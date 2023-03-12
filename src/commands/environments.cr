@@ -13,8 +13,13 @@ class Environments
 
     puts "LDSync - Enviroments for #{config.project}"
     puts "------------------------------------------------"
-    environments.each do |key, name|
-      puts "#{key}"
+    environments.each do |key, values|
+      puts "key: #{key}"
+      puts "name: #{values[0]}"
+      puts "api-key: #{values[1]}"
+      puts "mobile-key: #{values[2]}"
+      puts ""
+      puts "------------------------------------------------"
     end
   end
 end

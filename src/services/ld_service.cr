@@ -62,7 +62,7 @@ class LDService
           exit 1
         end
       else
-        puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token."
+        puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token. - #{response.status_code}"
         exit 1
       end
     end
@@ -87,7 +87,7 @@ class LDService
           exit 1
         end
       else
-        puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token."
+        puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token. - #{response.status_code}"
         exit 1
       end
     end
@@ -95,11 +95,55 @@ class LDService
     sleep_if_rate_limit(response)
   end
 
-  def get_flags : Hash(String, Tuple(String, Bool))
-    response = HTTP::Client.get("#{base_url}/flags/#{@config.project}", headers: headers)
+  def get_projects : Hash(String, String)
+    response = HTTP::Client.get("#{base_url}/projects?limit=1000", headers: headers)
 
     unless response.status_code == 200
-      puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token."
+      puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token. - #{response.status_code}"
+      exit
+    end
+
+    sleep_if_rate_limit(response)
+
+    projects = JSON.parse(response.body)
+
+    results = Hash(String, String).new
+    projects["items"].as_a.each do |project|
+      key = project["key"].as_s
+      name = project["name"].as_s
+      results[key] = name
+    end
+
+    return results
+  end
+
+  def get_environments : Hash(String, String)
+    response = HTTP::Client.get("#{base_url}/projects/#{@config.project}/environments?limit=1000", headers: headers)
+
+    unless response.status_code == 200
+      puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token. - #{response.status_code}"
+      exit
+    end
+
+    sleep_if_rate_limit(response)
+
+    envs = JSON.parse(response.body)
+
+    results = Hash(String, String).new
+    envs["items"].as_a.each do |env|
+      key = env["key"].as_s
+      name = env["name"].as_s
+      results[key] = name
+    end
+
+    return results
+  end
+
+  def get_flags : Hash(String, Tuple(String, Bool))
+    response = HTTP::Client.get("#{base_url}/flags/#{@config.project}?limit=1000", headers: headers)
+
+    unless response.status_code == 200
+      puts "LDSync - Cannot connect to Launch Darkly.  Check your network and/or access token. - #{response.status_code}"
       exit
     end
 
@@ -126,7 +170,7 @@ class LDService
     response = HTTP::Client.post("#{base_url}/flags/#{@config.project}", headers: headers, body: body)
 
     unless response.status_code == 201
-      puts "LDSync - Failed to create flag #{key}"
+      puts "LDSync - Failed to create flag #{key}. - #{response.status_code}"
       puts response.body.to_s
       exit 1
     end

@@ -26,7 +26,7 @@ class Config
         YAML.parse(file)
       end
     rescue
-      puts "LDSync - Could not open #{filename}. exiting."
+      puts "LDSync - Could not open #{filename}. run 'ldsync init' to fix this."
       exit 1
     end
 

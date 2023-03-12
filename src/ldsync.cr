@@ -40,9 +40,9 @@ module LDSync
         parser.banner = "Usage: ldsync projects"
         command = "projects"
       end
-      parser.on "environments", "List all the environments for a project" do
-        parser.banner = "Usage: ldsync -p {project} environments"
-        command = "environments"
+      parser.on "envs", "List all the environments for a project" do
+        parser.banner = "Usage: ldsync -p {project} envs"
+        command = "envs"
       end
       parser.on("flags", "List all the flags for a project") do
         parser.banner = "Usage: ldsync -p {project} -e {env} flags"
@@ -51,7 +51,7 @@ module LDSync
       parser.on "-c FILE", "--config=FILE", "Path to the config file" do |file|
         filename = file
       end
-      parser.on "-p PROJECT", "--proejct=PROJECT", "Project" do |proj|
+      parser.on "-p PROJECT", "--project=PROJECT", "Project" do |proj|
         project = proj
       end
       parser.on "-e ENV", "--environment=ENV", "Environment" do |env|
@@ -76,7 +76,7 @@ module LDSync
       exit
     end
 
-    if command == "environments"
+    if command == "envs"
       Environments.exec(filename, project)
       exit
     end

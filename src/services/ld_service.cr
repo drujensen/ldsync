@@ -117,7 +117,7 @@ class LDService
     return results
   end
 
-  def get_environments : Hash(String, String)
+  def get_environments : Hash(String, Tuple(String, String, String))
     response = HTTP::Client.get("#{base_url}/projects/#{@config.project}/environments?limit=1000", headers: headers)
 
     unless response.status_code == 200
@@ -129,11 +129,13 @@ class LDService
 
     envs = JSON.parse(response.body)
 
-    results = Hash(String, String).new
+    results = Hash(String, Tuple(String, String, String)).new
     envs["items"].as_a.each do |env|
       key = env["key"].as_s
       name = env["name"].as_s
-      results[key] = name
+      api_key = env["apiKey"].as_s
+      mobile_key = env["mobileKey"].as_s
+      results[key] = {name, api_key, mobile_key}
     end
 
     return results

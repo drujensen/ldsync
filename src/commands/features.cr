@@ -19,7 +19,7 @@ class Features
     flags.each do |key, values|
       puts "key: #{key}"
       puts "name: #{values[0]}"
-      puts "status: #{values[1]}"
+      puts "enabled: #{values[1]}"
       puts ""
       puts "------------------------------------------------"
     end

@@ -1,5 +1,5 @@
 ---
-project: example-project
+project: ldsync
 environment: example-environment
 flags:
 - key: example-flag

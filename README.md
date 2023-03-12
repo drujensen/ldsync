@@ -23,7 +23,7 @@ export LD_TOKEN="{API access token}"
 
 ## Usage
 
-To start off, we need to create a config file.  The default location of the config file is: `config/ldsync.yml`
+To start off, we need to create a config file.  The default location of the config file is: `config/ldconfig.yml`
 
 ### Initialize config file
 

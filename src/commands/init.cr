@@ -6,8 +6,7 @@ class Init
     begin
       unless File.exists? filename
         FileUtils.mkdir_p "config" if filename.includes? "config/"
-        project = Dir.current.split("/").last
-        config = Config.new(filename, project, "example-environment")
+        config = Config.new(filename, "example-project", "example-environment")
         config.add_flag("example-flag", "Example Flag", false)
         config.save
       else

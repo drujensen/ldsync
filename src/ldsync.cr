@@ -92,7 +92,7 @@ module LDSync
     end
 
     if command == "push"
-      Push.exec(filename)
+      Push.exec(filename, project, environment)
       exit
     end
 

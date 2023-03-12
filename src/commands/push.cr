@@ -3,11 +3,17 @@ require "json"
 require "yaml"
 
 class Push
-  def self.exec(filename : String)
+  def self.exec(filename : String, project : String, environment : String)
     puts "LDSync - pushing to Launch Darkly"
 
     # load config file
     config = Config.new(filename)
+
+    # override project
+    config.project = project unless project.empty?
+
+    # override environment
+    config.environment = environment unless environment.empty?
 
     # load launch darkly service
     service = LDService.new(config)

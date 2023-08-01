@@ -46,6 +46,26 @@ flags:
   name: Example Flag
   enabled: true
 ```
+### Query Projects
+
+To see the list of all projects:
+```
+ldsync projects
+```
+
+### Query Environments per Project
+
+To see the list of environments for a project:
+```
+ldsync -p {project-name} envs
+```
+
+### Query Flags per Project and Environment
+
+To see the listt of flags per project and environment:
+```
+ldsync -p {project-key} -e {environment-key} flags
+```
 
 ### Push to Launch Darkly
 
